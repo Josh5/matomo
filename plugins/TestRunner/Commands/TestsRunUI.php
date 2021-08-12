@@ -133,7 +133,7 @@ class TestsRunUI extends ConsoleCommand
         $specs = implode(" ", $specs);
 
         $screenshotTestingDir = PIWIK_INCLUDE_PATH . "/tests/lib/screenshot-testing/";
-        $cmd = "cd '$screenshotTestingDir' && NODE_PATH='$screenshotTestingDir/node_modules' node " . $phantomJsOptions . " run-tests.js $options $specs";
+        $cmd = "cd '$screenshotTestingDir' && node -v && NODE_PATH='$screenshotTestingDir/node_modules' node " . $phantomJsOptions . " run-tests.js $options $specs";
 
         $output->writeln('Executing command: <info>' . $cmd . '</info>');
         $output->writeln('');
