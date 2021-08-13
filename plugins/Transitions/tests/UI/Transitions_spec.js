@@ -42,9 +42,10 @@ describe("Transitions", function () {
         await page.goto('about:blank');
         await page.goto("?" + urlBase + "#?" + generalParams + "&category=General_Actions&subcategory=General_Pages&"
                     + "popover=RowAction$3ATransitions$3Aurl$3Ahttp$3A$2F$2Fpiwik.net$2Fdocs$2Fmanage-websites$2F");
-        await page.waitForTimeout(500);
         await page.waitForNetworkIdle();
+        await page.waitForTimeout(500);
         await page.hover('.Transitions_CurveTextRight');
+        await page.waitForTimeout(500);
 
         expect(await page.screenshotSelector('.ui-dialog')).to.matchImage('transitions_popup_urls');
     });

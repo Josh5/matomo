@@ -102,6 +102,7 @@ describe("TwoFactorAuth", function () {
         await loginUser('with2FA', false);
         await page.waitForTimeout(1000);
         const section = await page.$('.loginSection');
+        await page.waitForTimeout(500);
         expect(await section.screenshot()).to.matchImage('logme_not_verified');
     });
 
@@ -112,6 +113,7 @@ describe("TwoFactorAuth", function () {
         });
         await page.waitForNetworkIdle();
         const element = await page.$('.loginSection');
+        await page.waitForTimeout(500);
         expect(await element.screenshot()).to.matchImage('logme_not_verified_wrong_code');
     });
 
@@ -145,6 +147,7 @@ describe("TwoFactorAuth", function () {
         await page.click('.showRecoveryCodesLink');
         await page.waitForNetworkIdle();
         const element = await page.$('.loginSection');
+        await page.waitForTimeout(500);
         expect(await element.screenshot()).to.matchImage('show_recovery_codes_step1');
     });
 

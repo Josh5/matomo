@@ -296,7 +296,7 @@ describe("UsersManager", function () {
     it('should set access to selected sites when set bulk access is used', async function () {
         await page.click('.userPermissionsEdit .bulk-actions > .dropdown-trigger.btn');
         await page.waitForTimeout(500); // animation
-        await page.evaluate(() => $('#user-permissions-edit-bulk-actions>li:first > a:visible').mouseenter());
+        await page.hover('#user-permissions-edit-bulk-actions>li:first > a');
         await page.waitForTimeout(500); // animation
         await (await page.jQuery('#user-permissions-edit-bulk-actions a:contains(Admin):visible', { waitFor: true })).click();
 
