@@ -2396,7 +2396,10 @@ if (typeof window.Matomo !== 'object') {
                 uniqueTrackerId = trackerIdCounter++,
 
                 // whether a tracking request has been sent yet during this page view
-                hasSentTrackingRequestYet = false;
+                hasSentTrackingRequestYet = false,
+
+                // Track downloaded pages (pages downloaded that use the protocol 'file:' in the browser)
+                configTrackDownloadedPages = false;
 
             // Document title
             try {
@@ -2932,6 +2935,11 @@ if (typeof window.Matomo !== 'object') {
              * Send request
              */
             function sendRequest(request, delay, callback) {
+                // Do not send requests for locally downloaded files if not configured to do so
+                if (location.protocol === 'file:' && !configTrackDownloadedPages) {
+                    return;
+                }
+
                 refreshConsentStatus();
                 if (!configHasConsent) {
                     consentRequestsQueue.push(request);
@@ -2997,6 +3005,11 @@ if (typeof window.Matomo !== 'object') {
              */
             function sendBulkRequest(requests, delay)
             {
+                // Do not send requests for locally downloaded files if not configured to do so
+                if (location.protocol === 'file:' && !configTrackDownloadedPages) {
+                    return;
+                }
+
                 if (!canSendBulkRequest(requests)) {
                     return;
                 }
@@ -4999,11 +5012,29 @@ if (typeof window.Matomo !== 'object') {
             };
 
             /**
+             * Enables tracking of downloaded pages
+             *
+             * @param bool enable
+             */
+            this.trackDownloadedFiles = function (enable) {
+                configTrackDownloadedPages = enable;
+            };
+
+            /**
              * Specify the Matomo tracking URL
+             *
+             * If current location is a downloaded file, do not set the tracker URL
+             *  unless configured to do so.
+             * By never setting the tracker URL, this guarantees that nothing will
+             *  ever be sent to it during an accidental code regression.
              *
              * @param string trackerUrl
              */
             this.setTrackerUrl = function (trackerUrl) {
+                // Do not set the URL for downloaded files if not configured to track them
+                if (location.protocol === 'file:' && !configTrackDownloadedPages) {
+                    return;
+                }
                 configTrackerUrl = trackerUrl;
             };
 
@@ -6988,7 +7019,7 @@ if (typeof window.Matomo !== 'object') {
          * Constructor
          ************************************************************/
 
-        var applyFirst = ['addTracker', 'forgetCookieConsentGiven', 'requireCookieConsent', 'disableCookies', 'setTrackerUrl', 'setAPIUrl', 'enableCrossDomainLinking', 'setCrossDomainLinkingTimeout', 'setSessionCookieTimeout', 'setVisitorCookieTimeout', 'setCookieNamePrefix', 'setCookieSameSite', 'setSecureCookie', 'setCookiePath', 'setCookieDomain', 'setDomains', 'setUserId', 'setVisitorId', 'setSiteId', 'alwaysUseSendBeacon', 'enableLinkTracking', 'setCookieConsentGiven', 'requireConsent', 'setConsentGiven', 'disablePerformanceTracking'];
+        var applyFirst = ['addTracker', 'forgetCookieConsentGiven', 'requireCookieConsent', 'disableCookies', 'trackDownloadedFiles', 'setTrackerUrl', 'setAPIUrl', 'enableCrossDomainLinking', 'setCrossDomainLinkingTimeout', 'setSessionCookieTimeout', 'setVisitorCookieTimeout', 'setCookieNamePrefix', 'setCookieSameSite', 'setSecureCookie', 'setCookiePath', 'setCookieDomain', 'setDomains', 'setUserId', 'setVisitorId', 'setSiteId', 'alwaysUseSendBeacon', 'enableLinkTracking', 'setCookieConsentGiven', 'requireConsent', 'setConsentGiven', 'disablePerformanceTracking'];
 
         function createFirstTracker(matomoUrl, siteId)
         {
