@@ -1,0 +1,53 @@
+{% block content %}
+    <div class='widgetBody site-time'>
+
+        <span class='heading'>{{ 'CoreHome_SiteTime'|translate }}:</span>
+        <span class='clock' id='siteTime'></span>
+
+        <span class='heading'>{{ 'CoreHome_LocalTime'|translate }}:</span>
+        <span class='clock' id='localTime'></span>
+
+        <hr>
+
+        <p>{{ 'CoreHome_SiteTimezoneIs'|translate }}: <b>{{ timezone }}</b></p>
+
+    </div>
+
+    <script>
+        (function () {
+            const displayTime = function () {
+                const currentDate = new Date();
+                const localTime = currentDate
+                    .toLocaleString(
+                        'en-GB',
+                        {
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }
+                    );
+                const siteTime = currentDate
+                    .toLocaleString(
+                        'en-GB',
+                        {
+                            timeZone: '{{ timezone }}',
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }
+                    );
+
+                document.getElementById('localTime').innerHTML = localTime;
+                document.getElementById('siteTime').innerHTML = siteTime;
+
+                // Redraw every second
+                setTimeout(displayTime, 1000);
+            }
+            displayTime();
+        })();
+    </script>
+{% endblock %}
