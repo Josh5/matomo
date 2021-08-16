@@ -44,8 +44,13 @@ describe("Transitions", function () {
                     + "popover=RowAction$3ATransitions$3Aurl$3Ahttp$3A$2F$2Fpiwik.net$2Fdocs$2Fmanage-websites$2F");
         await page.waitForNetworkIdle();
         await page.waitForTimeout(500);
-        await page.hover('.Transitions_CurveTextRight');
-        await page.waitForTimeout(500);
+
+        // for some reason the tooltip isn't shown on the screenshot (even if the whole page is taken)
+        // but it seems to be placed in the HTML code so, we check for it's contents
+        await (await page.$('.Transitions_CurveTextRight')).hover();
+        await page.waitForSelector('.ui-tooltip');
+        const toolTipHtml = await page.evaluate(() => $('.ui-tooltip:visible').html());
+        expect(toolTipHtml).to.equal('<div class="ui-tooltip-content"><strong>4 (out of 4)</strong> to internal pages</div>');
 
         expect(await page.screenshotSelector('.ui-dialog')).to.matchImage('transitions_popup_urls');
     });
